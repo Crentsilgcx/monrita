@@ -1,0 +1,18 @@
+{
+    "1": {
+        "id": 1,
+        "name": "Super Admin",
+        "slug": "super_admin",
+        "permissions": [
+            "analytics.view",
+            "users.manage",
+            "courses.manage"
+        ]
+    },
+    "2": {
+        "id": 2,
+        "name": "Learner",
+        "slug": "learner",
+        "permissions": []
+    }
+}

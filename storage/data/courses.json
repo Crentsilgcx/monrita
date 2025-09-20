@@ -1,0 +1,35 @@
+{
+    "1": {
+        "id": 1,
+        "organization_id": 1,
+        "school_id": 1,
+        "code": "LIT101",
+        "title": "Creative Writing Basics",
+        "summary": "Spark imagination through storytelling.",
+        "cover_url": null,
+        "visibility": "school",
+        "meta": []
+    },
+    "2": {
+        "id": 2,
+        "organization_id": 1,
+        "school_id": 1,
+        "code": "STEM201",
+        "title": "STEM Explorers",
+        "summary": "Hands-on science and maths challenges.",
+        "cover_url": null,
+        "visibility": "school",
+        "meta": []
+    },
+    "3": {
+        "id": 3,
+        "organization_id": 1,
+        "school_id": 1,
+        "code": "LIFE101",
+        "title": "Life Skills Lab",
+        "summary": "Build resilience and communication skills.",
+        "cover_url": null,
+        "visibility": "school",
+        "meta": []
+    }
+}

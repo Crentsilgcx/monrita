@@ -1,82 +1,186 @@
 <?php
-/**
- * Simple landing page.
- */
 
 declare(strict_types=1);
 
-$siteTitle = 'Welcome to Monrita';
-$today = new DateTimeImmutable('now', new DateTimeZone('UTC'));
+$config = require __DIR__ . '/bootstrap.php';
 
-$messages = [
-    'Explore the features of this minimal PHP app.',
-    'Customize this page by editing index.php.',
-    'Current server time is shown below in UTC.'
-];
+use App\Controllers\AdminController;
+use App\Controllers\AssessmentController;
+use App\Controllers\AuthController;
+use App\Controllers\CommunityController;
+use App\Controllers\CourseController;
+use App\Controllers\DashboardController;
+use App\Controllers\EventController;
+use App\Controllers\OnboardingController;
+use App\Http\Request;
+use App\Http\Router;
+use App\Repositories\AssessmentAttemptRepository;
+use App\Repositories\AssessmentQuestionRepository;
+use App\Repositories\AssessmentRepository;
+use App\Repositories\AssessmentResponseRepository;
+use App\Repositories\CareerRepository;
+use App\Repositories\CareerSkillRepository;
+use App\Repositories\CareerSubjectRepository;
+use App\Repositories\CommentRepository;
+use App\Repositories\CourseRepository;
+use App\Repositories\PostRepository;
+use App\Repositories\EnrollmentRepository;
+use App\Repositories\EventRegistrationRepository;
+use App\Repositories\EventRepository;
+use App\Repositories\FeedRepository;
+use App\Repositories\GroupRepository;
+use App\Repositories\LearnerAttributeRepository;
+use App\Repositories\LearnerRepository;
+use App\Repositories\LearnerSkillRepository;
+use App\Repositories\LessonProgressRepository;
+use App\Repositories\LessonRepository;
+use App\Repositories\ModuleRepository;
+use App\Repositories\OrganizationRepository;
+use App\Repositories\ProgramRepository;
+use App\Repositories\RecommendationRepository;
+use App\Repositories\ReactionRepository;
+use App\Repositories\SchoolRepository;
+use App\Repositories\SkillRepository;
+use App\Repositories\SubjectRepository;
+use App\Repositories\UserRepository;
+use App\Services\AnalyticsService;
+use App\Services\CareerRecommendationService;
+use App\Services\FeedService;
+use App\Support\AuditLogger;
+use App\Support\Auth;
+use App\Support\Cache;
+use App\Support\CachedRepository;
+use App\Support\Csrf;
+use App\Support\JsonStore;
+use App\Support\ProfanityFilter;
+use App\Support\SessionManager;
+use App\Support\View;
 
-// Choose a message based on the current minute so it changes over time.
-$message = $messages[((int) $today->format('i')) % count($messages)];
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($siteTitle, ENT_QUOTES, 'UTF-8'); ?></title>
-    <style>
-        :root {
-            color-scheme: light dark;
-            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+$session = new SessionManager();
+$session->start();
+
+$request = Request::capture();
+
+$staticPath = $request->path();
+if (str_starts_with($staticPath, '/public/')) {
+    $file = __DIR__ . $staticPath;
+    if (is_file($file)) {
+        $ext = pathinfo($file, PATHINFO_EXTENSION);
+        $types = ['css' => 'text/css', 'js' => 'application/javascript', 'woff2' => 'font/woff2'];
+        if (isset($types[$ext])) {
+            header('Content-Type: ' . $types[$ext]);
         }
+        readfile($file);
+        return;
+    }
+}
+$store = new JsonStore($config['data_path']);
+$cache = new Cache($config['cache_path']);
+$view = new View(__DIR__ . '/views');
+$audit = new AuditLogger($config['audit_log']);
 
-        body {
-            margin: 0;
-            padding: 2rem;
-            display: grid;
-            place-items: center;
-            min-height: 100vh;
-            background: radial-gradient(circle at top left, #f0f4ff, #d9e2f3);
-        }
+$userRepository = new UserRepository($store);
+$learnerRepository = new LearnerRepository($store);
+$learnerSkillRepository = new LearnerSkillRepository($store);
+$learnerAttributeRepository = new LearnerAttributeRepository($store);
+$assessmentRepository = new AssessmentRepository($store);
+$questionRepository = new AssessmentQuestionRepository($store);
+$attemptRepository = new AssessmentAttemptRepository($store);
+$responseRepository = new AssessmentResponseRepository($store);
+$courseRepository = new CourseRepository($store);
+$moduleRepository = new ModuleRepository($store);
+$lessonRepository = new LessonRepository($store);
+$enrollmentRepository = new EnrollmentRepository($store);
+$progressRepository = new LessonProgressRepository($store);
+$groupRepository = new GroupRepository($store);
+$postRepository = new PostRepository($store);
+$commentRepository = new CommentRepository($store);
+$reactionRepository = new ReactionRepository($store);
+$eventRepository = new EventRepository($store);
+$registrationRepository = new EventRegistrationRepository($store);
+$feedRepository = new FeedRepository($store);
+$careerRepository = new CareerRepository($store);
+$careerSkillRepository = new CareerSkillRepository($store);
+$careerSubjectRepository = new CareerSubjectRepository($store);
+$subjectRepository = new SubjectRepository($store);
+$programRepository = new ProgramRepository($store);
+$recommendationRepository = new RecommendationRepository($store);
+$organizationRepository = new OrganizationRepository($store);
+$schoolRepository = new SchoolRepository($store);
+$skillRepository = new SkillRepository($store);
 
-        main {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 1.5rem;
-            padding: 2.5rem;
-            max-width: 32rem;
-            text-align: center;
-            box-shadow: 0 1rem 2.5rem rgba(15, 23, 42, 0.2);
-            backdrop-filter: blur(6px);
-        }
+$auth = new Auth($session, $userRepository);
+$csrf = new Csrf($session);
+$careerService = new CareerRecommendationService(
+    $careerRepository,
+    $careerSkillRepository,
+    $careerSubjectRepository,
+    $learnerSkillRepository,
+    $recommendationRepository,
+    $subjectRepository,
+    $programRepository,
+);
+$feedService = new FeedService($feedRepository);
+$analytics = new AnalyticsService($learnerRepository, $attemptRepository, $progressRepository, $enrollmentRepository);
+$courseCache = new CachedRepository($cache, $courseRepository);
+$profanity = new ProfanityFilter();
 
-        h1 {
-            margin-top: 0;
-            font-size: clamp(2rem, 4vw, 3rem);
-            color: #1d3a6b;
-        }
+$authController = new AuthController($view, $auth, $csrf, $session, $audit);
+$dashboardController = new DashboardController($view, $auth, $enrollmentRepository, $progressRepository, $assessmentRepository, $feedRepository, $learnerRepository, $recommendationRepository, $courseRepository);
+$onboardingController = new OnboardingController($view, $auth, $learnerRepository, $learnerAttributeRepository, $careerService, $csrf);
+$courseController = new CourseController($view, $auth, $courseCache, $courseRepository, $moduleRepository, $lessonRepository, $enrollmentRepository, $progressRepository, $csrf, $feedService);
+$assessmentController = new AssessmentController($view, $assessmentRepository, $questionRepository, $attemptRepository, $responseRepository, $learnerRepository, $careerService, $auth, $csrf, $feedService);
+$communityController = new CommunityController($view, $groupRepository, $postRepository, $commentRepository, $reactionRepository, $auth, $csrf, $profanity, $feedService);
+$eventController = new EventController($view, $eventRepository, $registrationRepository, $auth, $csrf);
+$adminController = new AdminController($view, $analytics, $auth);
 
-        p {
-            line-height: 1.6;
-            color: #334155;
-        }
+$router = new Router();
 
-        time {
-            display: inline-block;
-            margin-top: 1rem;
-            font-weight: 600;
-            color: #1d4ed8;
+$router->get('/', fn () => new App\Http\Response($view->render('pages/landing', ['user' => $auth->user()])));
+$router->get('/login', fn () => $authController->showLogin());
+$router->post('/login', fn (Request $request) => $authController->login($request));
+$router->post('/logout', fn (Request $request) => $authController->logout($request));
+$router->get('/dashboard', fn () => $dashboardController->show());
+$router->get('/onboarding', fn () => $onboardingController->show());
+$router->post('/onboarding', fn (Request $request) => $onboardingController->submit($request));
+$router->get('/courses', fn () => $courseController->index());
+$router->get('/courses/{id}', fn (Request $request, int $id) => $courseController->show($id));
+$router->post('/courses/{id}/enroll', fn (Request $request, int $id) => $courseController->enroll($request, $id));
+$router->post('/lessons/{id}/complete', fn (Request $request, int $id) => $courseController->completeLesson($request, $id));
+$router->get('/assessments', fn () => $assessmentController->index());
+$router->get('/assessments/{id}', fn (Request $request, int $id) => $assessmentController->take($id));
+$router->post('/assessments/{id}', fn (Request $request, int $id) => $assessmentController->submit($request, $id));
+$router->get('/assessments/{id}/result', fn (Request $request, int $id) => $assessmentController->result($request, $id));
+$router->get('/communities', fn () => $communityController->index());
+$router->get('/communities/{id}', fn (Request $request, int $id) => $communityController->show($id));
+$router->post('/communities/{id}/posts', fn (Request $request, int $id) => $communityController->post($request, $id));
+$router->post('/communities/{groupId}/posts/{postId}/comment', fn (Request $request, int $groupId, int $postId) => $communityController->comment($request, $groupId, $postId));
+$router->post('/communities/{groupId}/posts/{postId}/react', fn (Request $request, int $groupId, int $postId) => $communityController->react($request, $groupId, $postId));
+$router->get('/events', fn () => $eventController->index());
+$router->post('/events/{id}/register', fn (Request $request, int $id) => $eventController->register($request, $id));
+$router->get('/admin/analytics', fn () => $adminController->analytics());
+
+$user = $auth->user();
+$path = rtrim($request->path(), '/') ?: '/';
+$allowedDuringOnboarding = ['/onboarding', '/logout', '/login'];
+$allowPrefixes = ['/css', '/fonts'];
+if ($user) {
+    $learner = $learnerRepository->findByUserId($user['id']);
+    if ($learner && empty($learner['onboarding_completed_at'])) {
+        $allowed = in_array($path, $allowedDuringOnboarding, true);
+        foreach ($allowPrefixes as $prefix) {
+            if (str_starts_with($path, $prefix)) {
+                $allowed = true;
+                break;
+            }
         }
-    </style>
-</head>
-<body>
-<main>
-    <h1><?= htmlspecialchars($siteTitle, ENT_QUOTES, 'UTF-8'); ?></h1>
-    <p><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
-    <p>
-        <strong>Server time (UTC):</strong>
-        <time datetime="<?= $today->format(DateTimeInterface::ATOM); ?>">
-            <?= $today->format('l, F j Y \a\t H:i:s \U\T\C'); ?>
-        </time>
-    </p>
-</main>
-</body>
-</html>
+        if (!$allowed) {
+            header('Location: /onboarding', true, 302);
+            exit;
+        }
+    }
+}
+
+$response = $router->dispatch($request);
+$response->send();

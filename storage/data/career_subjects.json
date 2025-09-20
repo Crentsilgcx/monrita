@@ -1,0 +1,20 @@
+{
+    "1": {
+        "id": 1,
+        "career_id": 1,
+        "subject_id": 3,
+        "weight": 1.2
+    },
+    "2": {
+        "id": 2,
+        "career_id": 2,
+        "subject_id": 2,
+        "weight": 1.4
+    },
+    "3": {
+        "id": 3,
+        "career_id": 3,
+        "subject_id": 1,
+        "weight": 1.1
+    }
+}

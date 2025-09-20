@@ -1,0 +1,20 @@
+{
+    "1": {
+        "id": 1,
+        "organization_id": 1,
+        "school_id": 1,
+        "name": "STEM Innovators",
+        "description": "Share science discoveries and projects.",
+        "visibility": "school",
+        "is_moderated": true
+    },
+    "2": {
+        "id": 2,
+        "organization_id": 1,
+        "school_id": 1,
+        "name": "Creative Writers",
+        "description": "Poetry, spoken word, and stories.",
+        "visibility": "school",
+        "is_moderated": true
+    }
+}

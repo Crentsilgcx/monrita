@@ -1,0 +1,24 @@
+{
+    "1": {
+        "id": 1,
+        "organization_id": 1,
+        "school_id": 1,
+        "title": "Career Discovery Fair",
+        "description": "Meet mentors from different industries.",
+        "starts_at": "2025-09-27T20:10:02+00:00",
+        "ends_at": "2025-09-27T22:10:02+00:00",
+        "location": "School Hall",
+        "visibility": "school"
+    },
+    "2": {
+        "id": 2,
+        "organization_id": 1,
+        "school_id": 1,
+        "title": "Community Service Day",
+        "description": "Give back to the community together.",
+        "starts_at": "2025-10-04T20:10:02+00:00",
+        "ends_at": "2025-10-04T23:10:02+00:00",
+        "location": "Tema Community",
+        "visibility": "school"
+    }
+}

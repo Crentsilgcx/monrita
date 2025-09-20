@@ -1,0 +1,20 @@
+{
+    "1": {
+        "id": 1,
+        "name": "General Science",
+        "description": "Focus on sciences for SHS.",
+        "meta": []
+    },
+    "2": {
+        "id": 2,
+        "name": "Home Economics",
+        "description": "Health, nutrition, and care careers.",
+        "meta": []
+    },
+    "3": {
+        "id": 3,
+        "name": "Technical Skills",
+        "description": "Hands-on technical pathways.",
+        "meta": []
+    }
+}

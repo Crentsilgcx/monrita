@@ -1,0 +1,17 @@
+{
+    "1": {
+        "id": 1,
+        "name": "Mathematics",
+        "code": "MATH"
+    },
+    "2": {
+        "id": 2,
+        "name": "Science",
+        "code": "SCI"
+    },
+    "3": {
+        "id": 3,
+        "name": "ICT",
+        "code": "ICT"
+    }
+}
