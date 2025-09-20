@@ -1,0 +1,20 @@
+{
+    "1": {
+        "id": 1,
+        "name": "Problem Solving",
+        "slug": "problem-solving",
+        "description": "Identify and solve challenges."
+    },
+    "2": {
+        "id": 2,
+        "name": "Caregiving",
+        "slug": "caregiving",
+        "description": "Support others with empathy."
+    },
+    "3": {
+        "id": 3,
+        "name": "Technical Craft",
+        "slug": "technical-craft",
+        "description": "Use tools to build and repair."
+    }
+}

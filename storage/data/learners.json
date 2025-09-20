@@ -1,0 +1,22 @@
+{
+    "1": {
+        "id": 1,
+        "user_id": 2,
+        "organization_id": 1,
+        "school_id": 1,
+        "jhs_level": "JHS2",
+        "date_of_birth": null,
+        "gender": "female",
+        "address_line": "Community 5",
+        "community": "Tema",
+        "district": null,
+        "region": null,
+        "guardian_name": "Esi Asare",
+        "guardian_phone": "+233208888888",
+        "guardian_email": null,
+        "household_info": [],
+        "consents": [],
+        "onboarding_completed_at": null,
+        "onboarding_step": "identity"
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "1": {
+        "id": 1,
+        "assessment_id": 1,
+        "code": "RIASEC_R",
+        "prompt": "I enjoy fixing or building things.",
+        "response_type": "likert",
+        "options": [],
+        "weight": 1.2
+    },
+    "2": {
+        "id": 2,
+        "assessment_id": 1,
+        "code": "RIASEC_A",
+        "prompt": "I love performing or creating art.",
+        "response_type": "likert",
+        "options": [],
+        "weight": 1
+    },
+    "3": {
+        "id": 3,
+        "assessment_id": 1,
+        "code": "RIASEC_E",
+        "prompt": "I like leading teams toward a goal.",
+        "response_type": "likert",
+        "options": [],
+        "weight": 1.1
+    }
+}

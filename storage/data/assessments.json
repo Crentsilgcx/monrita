@@ -1,0 +1,9 @@
+{
+    "1": {
+        "id": 1,
+        "assessment_type_id": 1,
+        "title": "Interests Screener",
+        "description": "Discover the activities you enjoy most.",
+        "is_active": true
+    }
+}

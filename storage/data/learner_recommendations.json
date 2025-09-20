@@ -1,0 +1,101 @@
+{
+    "1": {
+        "learner_id": 1,
+        "snapshot_json": {
+            "generated_at": "2025-09-20T20:10:44+00:00",
+            "career_rankings": [
+                {
+                    "career": {
+                        "id": 1,
+                        "name": "Software Engineer",
+                        "description": "Builds and improves digital tools.",
+                        "meta": []
+                    },
+                    "score": 14.5
+                },
+                {
+                    "career": {
+                        "id": 2,
+                        "name": "Nurse",
+                        "description": "Cares for patients in clinics and hospitals.",
+                        "meta": []
+                    },
+                    "score": 8.2
+                },
+                {
+                    "career": {
+                        "id": 3,
+                        "name": "Electrician",
+                        "description": "Installs and maintains electrical systems.",
+                        "meta": []
+                    },
+                    "score": 5.5
+                }
+            ],
+            "program_suggestions": {
+                "1": [
+                    {
+                        "id": 1,
+                        "name": "General Science",
+                        "description": "Focus on sciences for SHS.",
+                        "meta": []
+                    },
+                    {
+                        "id": 2,
+                        "name": "Home Economics",
+                        "description": "Health, nutrition, and care careers.",
+                        "meta": []
+                    },
+                    {
+                        "id": 3,
+                        "name": "Technical Skills",
+                        "description": "Hands-on technical pathways.",
+                        "meta": []
+                    }
+                ],
+                "2": [
+                    {
+                        "id": 1,
+                        "name": "General Science",
+                        "description": "Focus on sciences for SHS.",
+                        "meta": []
+                    },
+                    {
+                        "id": 2,
+                        "name": "Home Economics",
+                        "description": "Health, nutrition, and care careers.",
+                        "meta": []
+                    },
+                    {
+                        "id": 3,
+                        "name": "Technical Skills",
+                        "description": "Hands-on technical pathways.",
+                        "meta": []
+                    }
+                ],
+                "3": [
+                    {
+                        "id": 1,
+                        "name": "General Science",
+                        "description": "Focus on sciences for SHS.",
+                        "meta": []
+                    },
+                    {
+                        "id": 2,
+                        "name": "Home Economics",
+                        "description": "Health, nutrition, and care careers.",
+                        "meta": []
+                    },
+                    {
+                        "id": 3,
+                        "name": "Technical Skills",
+                        "description": "Hands-on technical pathways.",
+                        "meta": []
+                    }
+                ]
+            }
+        },
+        "generated_at": "2025-09-20T20:10:44+00:00",
+        "id": 1
+    }
+}

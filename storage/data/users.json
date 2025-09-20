@@ -1,0 +1,36 @@
+{
+    "1": {
+        "id": 1,
+        "organization_id": 1,
+        "school_id": 1,
+        "name": "Ama Mensah",
+        "email": "ama.mensah@example.com",
+        "phone": "+233201234567",
+        "email_verified_at": "2025-09-20T20:10:02+00:00",
+        "password": "$2y$12$JC6wMjq7qTHj6s.1h8ooj.OTwe3Yt5h88MWhRTHRFSYICCynnAEZO",
+        "status": "active",
+        "last_login_at": null,
+        "remember_token": null,
+        "roles": [
+            "super_admin"
+        ],
+        "permissions": []
+    },
+    "2": {
+        "id": 2,
+        "organization_id": 1,
+        "school_id": 1,
+        "name": "Kojo Asare",
+        "email": "kojo.asare@example.com",
+        "phone": "+233209876543",
+        "email_verified_at": null,
+        "password": "$2y$12$JC6wMjq7qTHj6s.1h8ooj.OTwe3Yt5h88MWhRTHRFSYICCynnAEZO",
+        "status": "active",
+        "last_login_at": null,
+        "remember_token": null,
+        "roles": [
+            "learner"
+        ],
+        "permissions": []
+    }
+}

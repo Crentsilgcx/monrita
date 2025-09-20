@@ -1,0 +1,20 @@
+{
+    "1": {
+        "id": 1,
+        "name": "Software Engineer",
+        "description": "Builds and improves digital tools.",
+        "meta": []
+    },
+    "2": {
+        "id": 2,
+        "name": "Nurse",
+        "description": "Cares for patients in clinics and hospitals.",
+        "meta": []
+    },
+    "3": {
+        "id": 3,
+        "name": "Electrician",
+        "description": "Installs and maintains electrical systems.",
+        "meta": []
+    }
+}
