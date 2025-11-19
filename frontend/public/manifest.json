@@ -1,0 +1,62 @@
+{
+  "name": "Monrita Supply Tracker",
+  "short_name": "Monrita",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f766e",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1080&q=80",
+      "sizes": "1080x1920",
+      "type": "image/jpeg",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "https://cdn.jsdelivr.net/gh/creativetimofficial/public-assets/argon-dashboard-pro/assets/img/ill/ill-3d-balancing.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mobile splash",
+      "short_name": "Splash",
+      "description": "Jump directly into the immersive splash showcase",
+      "url": "/?utm_source=shortcut-splash",
+      "icons": [
+        {
+          "src": "https://cdn-icons-png.flaticon.com/512/992/992700.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "3D Control Hub",
+      "short_name": "3D Hub",
+      "description": "Explore the online 3D logistics models",
+      "url": "/?utm_source=shortcut-3d",
+      "icons": [
+        {
+          "src": "https://cdn-icons-png.flaticon.com/512/4144/4144334.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
