@@ -1,0 +1,136 @@
+CREATE TABLE IF NOT EXISTS users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('SUPER_ADMIN','FIELD_STAFF') NOT NULL DEFAULT 'FIELD_STAFF',
+    active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS auth_tokens (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    token VARCHAR(128) NOT NULL UNIQUE,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS plan_periods (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    academic_year VARCHAR(20) NULL,
+    term VARCHAR(20) NULL,
+    label VARCHAR(100) NOT NULL,
+    is_active TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_period (academic_year, term)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS schools (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(150) NOT NULL,
+    region VARCHAR(100) NOT NULL,
+    district VARCHAR(100) NOT NULL,
+    type VARCHAR(50) NULL,
+    is_active TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    KEY idx_region (region),
+    KEY idx_district (district)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS commodities (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(150) NOT NULL,
+    unit VARCHAR(50) NOT NULL,
+    description TEXT NULL,
+    is_active TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS suppliers (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    contact_person VARCHAR(150) NULL,
+    phone VARCHAR(50) NULL,
+    email VARCHAR(150) NULL,
+    address TEXT NULL,
+    is_active TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS supply_plans (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    plan_period_id INT UNSIGNED NOT NULL,
+    school_id INT UNSIGNED NOT NULL,
+    commodity_id INT UNSIGNED NOT NULL,
+    planned_quantity DECIMAL(15,3) NOT NULL,
+    remaining_quantity DECIMAL(15,3) NULL,
+    notes TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_plan (plan_period_id, school_id, commodity_id),
+    FOREIGN KEY (plan_period_id) REFERENCES plan_periods(id),
+    FOREIGN KEY (school_id) REFERENCES schools(id),
+    FOREIGN KEY (commodity_id) REFERENCES commodities(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS deliveries (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    plan_period_id INT UNSIGNED NOT NULL,
+    school_id INT UNSIGNED NOT NULL,
+    commodity_id INT UNSIGNED NOT NULL,
+    supplier_id INT UNSIGNED NULL,
+    user_id INT UNSIGNED NOT NULL,
+    delivery_date DATE NOT NULL,
+    expected_quantity_before DECIMAL(15,3) NOT NULL,
+    actual_quantity DECIMAL(15,3) NOT NULL,
+    remaining_quantity_after DECIMAL(15,3) NOT NULL,
+    notes TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    KEY idx_period_school (plan_period_id, school_id, commodity_id, delivery_date),
+    KEY idx_user (user_id),
+    FOREIGN KEY (plan_period_id) REFERENCES plan_periods(id),
+    FOREIGN KEY (school_id) REFERENCES schools(id),
+    FOREIGN KEY (commodity_id) REFERENCES commodities(id),
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS plan_imports (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    plan_period_id INT UNSIGNED NOT NULL,
+    imported_by INT UNSIGNED NOT NULL,
+    original_filename VARCHAR(255) NOT NULL,
+    file_type ENUM('JSON','CSV','XLSX') NOT NULL,
+    imported_rows INT DEFAULT 0,
+    status ENUM('PENDING','SUCCESS','FAILED') NOT NULL DEFAULT 'PENDING',
+    error_message TEXT NULL,
+    raw_payload LONGTEXT NULL,
+    detected_headers TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (plan_period_id) REFERENCES plan_periods(id),
+    FOREIGN KEY (imported_by) REFERENCES users(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS plan_period_metrics (
+    plan_period_id INT UNSIGNED PRIMARY KEY,
+    total_planned DECIMAL(18,3) NOT NULL DEFAULT 0,
+    total_delivered DECIMAL(18,3) NOT NULL DEFAULT 0,
+    total_remaining DECIMAL(18,3) NOT NULL DEFAULT 0,
+    total_schools INT UNSIGNED NOT NULL DEFAULT 0,
+    total_commodities INT UNSIGNED NOT NULL DEFAULT 0,
+    last_recalculated_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (plan_period_id) REFERENCES plan_periods(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
